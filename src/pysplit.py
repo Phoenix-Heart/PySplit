@@ -11,8 +11,8 @@ Created on Jul 24, 2013
     #@author: lily
 '''
     
-import os
-# settings
+
+# adjustable settings
 primary_extension = '.txt'
 question_extension = '.txt'
 solution_extension = '.py'
@@ -21,15 +21,19 @@ solution_append = 'sol'
 question_subdir = './questions/'
 solution_subdir = './solutions/'
 reddit_subdir = './reddit/'
+auto_root = 'none'
 
-#global root DO NOT MODIFY
+#DO NOT MODIFY BELOW THIS LINE
+import os
 root = None
 
 # selects a single file or directory and runs conversion on the file or on all text files in that directory.
 def run():
-    # query user using directory GUI and return path selected
-    root = selector(True)
-    
+    'query user using directory GUI and return path selected'
+    if auto_root=='none':
+        root = selector(True)
+    else:
+        root = auto_root
     is_directory = os.path.isdir(root)
     if is_directory:
         os.chdir(root)
@@ -44,18 +48,20 @@ def run():
         convert(file_)
     # end run()
     
-#takes in a string representation of the original filename and returns two new file names: question_name and solution_name according to the configuration.   
+
 def new_filenames(old_name):
+    'takes in a string representation of the original filename and returns two new file names: question_name and solution_name according to the configuration'   
     ext_pos = old_name[::-1].find('.')
     name = old_name[:len(old_name)-ext_pos]
     question_name = name+question_append+question_extension 
     solution_name = name+solution_append+solution_extension
-    print 'new file names generated'
+
     return question_name, solution_name
     # end new_filenames()
-    
-# Function presents the user with a GUI to select a directory and returns the path.
+ 
 def selector(get_dir):
+    'presents the user with a GUI to select a directory and returns the path'
+    
     # using Tkinter lib to create GUI navigation elements
     import Tkinter, tkFileDialog
     root = Tkinter.Tk()
@@ -71,9 +77,9 @@ def selector(get_dir):
     return file_path
     # end selector()
 
-# creates all necessary subdirectories in the root folder if they do not already exist.    
+
 def subdir():
-    #os.chdir(root)
+    'creates all necessary subdirectories in the root folder if they do not already exist'
     try:
         os.makedirs(question_subdir)
     except OSError:
@@ -86,14 +92,14 @@ def subdir():
         os.makedirs(reddit_subdir)
     except OSError:
             pass
-        
-# formats the input string into a reddit version of a bold string.        
+      
 def bold(string):
+    'formats the input string into a reddit version of a bold string.'
     return '**'+string+'**'
 
-# primary function of pysplit. This portion takes in a filename, reads the file, and creates two new files: questions and solutions.
 def convert(filename):
-    print filename
+    'primary function of pysplit. This portion takes in a filename, reads the file, and creates two new files: questions and solutions'
+
     try:
         # open the passed in filename for reading
         seed_file = open(filename)
@@ -156,6 +162,6 @@ def config_append(question_append, solution_append): pass
 def config_dir(question_dir, solution_dir): pass
 def config_ext(question_ext, solution_ext): pass
         
-# run split program if module running as primary program    
+# run split program if module running as primary program
 if __name__ == '__main__':
     run()
